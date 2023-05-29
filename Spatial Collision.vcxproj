@@ -21,12 +21,22 @@
   <ItemGroup>
     <ClInclude Include="header\object.h" />
     <ClInclude Include="header\paint_event.h" />
+    <ClInclude Include="header\renderer.h" />
+    <ClInclude Include="header\spatial_partition.h" />
     <ClInclude Include="header\update_event.h" />
     <ClInclude Include="header\window.h" />
     <ClInclude Include="src\header_paths.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\object.cpp" />
+    <ClCompile Include="src\paint_event.cpp" />
+    <ClCompile Include="src\renderer.cpp" />
+    <ClCompile Include="src\update_event.cpp" />
+    <ClCompile Include="src\window.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="Arial.ttf" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
