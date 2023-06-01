@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -19,10 +19,12 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="header\fwd_dec.h" />
     <ClInclude Include="header\object.h" />
     <ClInclude Include="header\paint_event.h" />
     <ClInclude Include="header\renderer.h" />
     <ClInclude Include="header\spatial_partition.h" />
+    <ClInclude Include="header\texture.h" />
     <ClInclude Include="header\update_event.h" />
     <ClInclude Include="header\window.h" />
     <ClInclude Include="src\header_paths.h" />
@@ -31,12 +33,18 @@
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\object.cpp" />
     <ClCompile Include="src\paint_event.cpp" />
+    <ClCompile Include="src\quadtree.cpp" />
     <ClCompile Include="src\renderer.cpp" />
+    <ClCompile Include="src\spatial_hashing.cpp" />
+    <ClCompile Include="src\texture.cpp" />
     <ClCompile Include="src\update_event.cpp" />
     <ClCompile Include="src\window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Font Include="Arial.ttf" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="green_circle.png" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

@@ -2,49 +2,49 @@
 
 #include "paint_event.h"
 #include "update_event.h"
-
-namespace event {
-	class paint_event;
-	class update_event;
-}
+#include "fwd_dec.h"
+#include "texture.h"
+#include "spatial_partition.h"
+#include <math.h>
 
 namespace phys {
+	inline float gravity = (float)(30);
+
 	class object {
 	private:
+		gfx::texture& sprite;
 
-		float theta;
-		float v;
-		float mass;
-
-		float x, y;
-		float radius;
-
-		int color;
 	public:
 		//keep object creation concise
 		typedef struct _object_param {
 			float x, y;
 			float radius;
 
-			float theta;
-			float v;
+			float vx, vy;
 			float mass;
+
+			float coeff_restitution;
 
 			int color;
 		} object_param;
+
+		float x, y;
+		float radius;
+
+		float vx, vy;
+		float mass;
+
+		float coeff_restitution;
+
+		int color;
 
 		object(object_param&);
 		~object();
 
 		void update(event::update_event&);
 		void paint(event::paint_event&);
+		bool collide(object&);
 
-		inline float getVx() {
-			return v * cosf(theta);
-		};
-
-		inline float getVy() {
-			return v * sinf(theta);
-		};
+		bool overlap_rect(sp::rect& rect);
 	};
 }

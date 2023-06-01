@@ -10,3 +10,5 @@
 #define object_h				__comp(header_path, object.h)
 #define paint_event_h			__comp(header_path, paint_event.h)
 #define update_event_h			__comp(header_path, update_event.h)
+#define spatial_partition_h		__comp(header_path, spatial_partition.h)
+#define texture_h				__comp(header_path, texture.h)

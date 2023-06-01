@@ -3,11 +3,7 @@
 #include <SDL2/SDL.h>
 #include "window.h"
 #include "renderer.h"
-
-namespace gfx {
-	class renderer;
-	class window;
-}
+#include "fwd_dec.h"
 
 namespace event {
 	class paint_event {

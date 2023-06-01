@@ -1,17 +1,32 @@
-#include "header_paths.h"
-#include renderer_h
-
 #include "SDL2/SDL.h"
+#include "header_paths.h"
+#include <iostream>
+#include renderer_h
+#include texture_h
+#include spatial_partition_h
 
 namespace gfx {
-	renderer::renderer(SDL_Renderer* _handle) {
+	renderer::renderer(SDL_Renderer* _handle, gfx::window& window) : window(window) {
 		handle = _handle;
+		SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
+		SDL_SetRenderDrawBlendMode(handle, SDL_BLENDMODE_BLEND);
+		gfx::ppu_x = window.getWidth() / sp::UNITS_WIDTH;
+		gfx::ppu_y = window.getHeight() / sp::UNITS_HEIGHT;
+
+		//std::cout << gfx::ppu_x << "  " << gfx::ppu_y << std::endl;
 	};
 
 	renderer::~renderer() {
 	};
 
-	void renderer::drawCircle(int x, int y, int pxr, int color) {
+	void renderer::render_texture(int px, int py, gfx::texture& tex) {
+		SDL_Rect pos = { px - tex.width / 2, py - tex.height / 2, tex.width, tex.height };
+		//SDL_Rect pos = { px - tex.width / 2, py - tex.height / 2, 4, 4 };
+
+		SDL_RenderCopy(handle, tex.tex_handle, nullptr, &pos);
+	}
+
+	void renderer::draw_circle(int x, int y, int pxr, int color) {
 		Uint8 r, g, b, a;
 		unpack_rgb(color, &r, &g, &b, &a);
 		SDL_SetRenderDrawColor(handle, r, g, b, a);
@@ -38,9 +53,14 @@ namespace gfx {
 		*a = (color >> 24) & 0xff;
 	}
 
-	void renderer::to_pixel(int x, int y, int* nx, int* ny) {
-		*nx = x;
-		*ny = y;
+	void renderer::to_pixel(float ux, float uy, int* px, int* py) {
+		*px = (int)round(ux * ppu_x);
+		*py = (int)round(uy * ppu_y); 
+	}
+
+	void renderer::to_units(int px, int py, float* ux, float* uy) {
+		*ux = (1.0f / ppu_x) * px;
+		*uy = (1.0f / ppu_y) * py;
 	}
 }
 
