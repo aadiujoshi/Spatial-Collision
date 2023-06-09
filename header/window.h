@@ -13,12 +13,13 @@
 
 namespace gfx {
 	inline int screen_width = 0, screen_height = 0;
-	inline long long tick_speed = 1000000 * 1;
+	inline long long tick_speed = 1000000 * (1/5.0f);
 
 	void ns_delay(long long ns);
 
 	class window {
 	private:
+		bool render_partition;
 		std::unique_ptr<sp::spatial_partition> partition_method;
 		int capture_x, capture_y;
 		char partition_type;

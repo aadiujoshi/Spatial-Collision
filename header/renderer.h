@@ -18,7 +18,7 @@ namespace gfx {
 		renderer(SDL_Renderer*, gfx::window&);
 		~renderer();
 
-		void render_texture(int px, int py, gfx::texture& tex);
+		void render_texture(SDL_Rect& pos, gfx::texture& tex);
 		void draw_circle(int, int, int, int);
 
 		static void unpack_rgb(int, Uint8*, Uint8*, Uint8*, Uint8*);

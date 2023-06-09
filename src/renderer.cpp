@@ -12,17 +12,12 @@ namespace gfx {
 		SDL_SetRenderDrawBlendMode(handle, SDL_BLENDMODE_BLEND);
 		gfx::ppu_x = window.getWidth() / sp::UNITS_WIDTH;
 		gfx::ppu_y = window.getHeight() / sp::UNITS_HEIGHT;
-
-		//std::cout << gfx::ppu_x << "  " << gfx::ppu_y << std::endl;
 	};
 
 	renderer::~renderer() {
 	};
 
-	void renderer::render_texture(int px, int py, gfx::texture& tex) {
-		SDL_Rect pos = { px - tex.width / 2, py - tex.height / 2, tex.width, tex.height };
-		//SDL_Rect pos = { px - tex.width / 2, py - tex.height / 2, 4, 4 };
-
+	void renderer::render_texture(SDL_Rect& pos, gfx::texture& tex) {
 		SDL_RenderCopy(handle, tex.tex_handle, nullptr, &pos);
 	}
 

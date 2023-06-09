@@ -47,7 +47,12 @@ namespace gfx {
         //handle preloaded textures
         gfx::texture::green_circle = new gfx::texture("green_circle.png", (*renderer));
 
-        partition_method = std::make_unique<sp::quadtree>(objs);
+        if (partition_type == event::update_event::QUADTREE) {
+            partition_method = std::make_unique<sp::quadtree>(objs);
+        }
+        if (partition_type == event::update_event::SPATIAL_HASHING) {
+            partition_method = std::make_unique<sp::spatial_hashing>(objs);
+        }
     }
 
     window::~window() {
@@ -79,13 +84,6 @@ namespace gfx {
                         if (event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
                             SDL_RenderPresent(rend_handle);
 
-                            /*partition_method.reset();
-                            if (partition_type == event::update_event::QUADTREE) {
-                                partition_method = std::make_unique<sp::quadtree>(objs);
-                            } 
-                            if (partition_type == event::update_event::SPATIAL_HASHING) {
-                                partition_method = std::make_unique<sp::spatial_hashing>(objs);
-                            }*/
                         }
                         break;
                     }
@@ -97,17 +95,21 @@ namespace gfx {
                             objs.clear();
                         }
 
+                        if (key == SDLK_s) {
+                            render_partition = !render_partition;
+                        }
+
                         if (key == SDLK_LSHIFT && mouse.timestamp != 0) {
                             phys::object::object_param op = { 0 };
                             float nx, ny;
                             gfx::renderer::to_units(mouse.x, mouse.y, &nx, &ny);
+                            //op.radius = randf() * 20 + 1;
                             op.radius = 1;
                             op.x = nx;
-                            op.y = ny;
+                            op.y = sp::UNITS_HEIGHT - ny;
                             op.vx = (capture_x - mouse.x) * (1.0f / gfx::ppu_x);
-                            op.vy = (capture_y - mouse.y) * (1.0f / gfx::ppu_y);
+                            op.vy = -(capture_y - mouse.y) * (1.0f / gfx::ppu_y);
                             op.mass = 10;
-                            op.coeff_restitution = 0.2f;
 
                             //std::cout << nx << "  " << ny << "  " << op.vx << "  " << op.vy << "  " << gfx::ppu_x << "  " << gfx::ppu_y << std::endl;
 
@@ -157,7 +159,7 @@ namespace gfx {
 
             // Update the screen
             SDL_RenderPresent(rend_handle);
-            std::string f = std::to_string(objs.size()) + " | " + std::to_string(0x3B9ACA00 / (timeNs() - nstart));
+            std::string f = std::to_string(objs.size()) + " objs | fps: " + std::to_string(0x3B9ACA00 / (timeNs() - nstart));
             SDL_SetWindowTitle(handle, (const char*)(f.c_str()));
         }
 
@@ -170,21 +172,21 @@ namespace gfx {
 
     void window::render_update(event::paint_event& e) {
 
+        bool use_dynamic = true;
+
         gfx::ppu_x = (this->getWidth() / sp::UNITS_WIDTH);
         gfx::ppu_y = (this->getHeight() / sp::UNITS_HEIGHT);
-
-        //std::cout << this->getWidth() << "  " << sp::UNITS_WIDTH << (this->getWidth() / sp::UNITS_WIDTH) << std::endl;
 
         SDL_Renderer* rh = e.renderer->handle;
 
         long long tns = timeNs();
 
-        //ns_delay(1000000 * 5);
-
         //-------------------------------------------------------------------
         //update
 
-        event::update_event ue(tick_speed, objs, partition_type, *partition_method);
+        //std::cout << partition_method.get() << std::endl;
+
+        event::update_event ue( use_dynamic ? tick_delay_ns : tick_speed, objs, partition_type, *partition_method.get());
 
         for (size_t i = 0; i < objs.size(); i++) {
             objs[i].update(ue);
@@ -207,7 +209,8 @@ namespace gfx {
         }
         //-------------------------------------------------------------------
         //render
-        partition_method.get()->paint(e);
+        if(render_partition)
+            partition_method.get()->paint(e);
 
         for (size_t i = 0; i < objs.size(); i++) {
             objs[i].paint(e);
@@ -222,9 +225,9 @@ namespace gfx {
         //-------------------------------------------------------------------
         tick_delay_ns = (timeNs() - tns);
 
-        ns_delay(tick_speed - tick_delay_ns);
+        if(!use_dynamic)
+            ns_delay(tick_speed - tick_delay_ns);
 
-        //std::cout << (timeNs() - tns) << std::endl;
     }
 
     int window::getWidth() {

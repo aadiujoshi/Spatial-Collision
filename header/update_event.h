@@ -20,7 +20,7 @@ namespace event {
 
 		long long ns_tick;
 		std::vector<phys::object>& objs;
-
+		
 		update_event(long long, std::vector<phys::object>&, char, sp::spatial_partition&);
 		~update_event();
 	};
